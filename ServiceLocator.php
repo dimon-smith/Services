@@ -16,9 +16,14 @@ final class ServiceLocator
 
     protected static $instances = [];
 
-    public function set($name, $service, $owerride = false)
+    public function accept(ServicesConfigVisitor $visitor)
     {
-        if (! $owerride && $this->has($name)) {
+        $visitor->visit($this);
+    }
+
+    public function set($name, $service, $override = false)
+    {
+        if (false == $override && $this->has($name)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'A service by the name "%s" already exists.',
@@ -33,11 +38,15 @@ final class ServiceLocator
         }
 
         self::$registry[$name] = $service;
+
+        if ($override && isset(self::$instances[$name])) {
+            unset(self::$instances[$name]);
+        }
     }
 
     public function get($name, $shared = true)
     {
-        if (! $shared) {
+        if (false == $shared) {
             if (! array_key_exists($name, self::$registry)) {
                 throw new InvalidArgumentException(
                     sprintf(
@@ -55,8 +64,8 @@ final class ServiceLocator
 
         if (array_key_exists($name, self::$registry)) {
             $instance = is_string(self::$registry[$name])
-                ? new self::$registry[$name]
-                : self::$registry[$name];
+            ? new self::$registry[$name]
+            : self::$registry[$name];
 
             self::$instances[$name] = $instance;
             return $instance;
