@@ -16,7 +16,7 @@ final class ServiceLocator
 
     protected static $instances = [];
 
-    public function accept(ServicesConfigVisitor $visitor)
+    public function accept(ServicesVisitorInterface $visitor)
     {
         $visitor->visit($this);
     }

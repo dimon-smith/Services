@@ -2,7 +2,9 @@
 
 namespace Services;
 
-class ServicesConfigVisitor
+use ServiceLocator as Services;
+
+class ServicesConfigVisitor implements ServicesVisitorInterface
 {
     protected $config = [];
 
